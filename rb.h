@@ -7,12 +7,7 @@
 template<typename Key, typename Value>  class RedBlackTree {
         
   private:
-      enum { BLACK = false, RED = true};
-   /*
-   const int BST = 0;      // binary search tree: unbalanced
-   const int TD234 = 1;    // 2 3 4 implementation technique   
-   const int BU23 = 2;     // 2 3 implementation technique   
-   */
+    enum { BLACK = false, RED = true};
    
     class Node {
       public:    
@@ -119,8 +114,6 @@ template<typename Key, typename Value>  class RedBlackTree {
      return setN(x);
   }
 
-
-
  public:
 
    RedBlackTree() {};
@@ -149,47 +142,35 @@ template<typename Key, typename Value>  class RedBlackTree {
       root->color = BLACK;
    }
 
- 
 };
-
-template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node x, Key key)
-{
-   if (x == 0)    return 0;
-   if (key == x.key) return x.value;
-   if (key < x.key)  return get(x.left,  key);
-   else              return get(x.right, key);
-}
-
+//TODO: return a pair<> or return bool and value by reference
 template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key)
 {
-    if (p == 0) {
-
-       return 0;
-    }
-
-    if (key == p->key) { 
-
-        return p->value;
-    }
-
-    if (key < p->key) {
-
-         return get(p->left,  key);
-
-    }   else  {
-
-          return get(p->right, key);
-    }
+    
+/* alternate, recursive code
+   if (p == 0)    return 0;
+   if (key == p->key) return p->value;
+   if (key < p->key)  return get(p->left,  key);
+   else              return get(p->right, key);
+*/
+   // non-recursive code:
+   while (p != 0) {
+       if      (key < p->key) p = p->left;
+       else if (key > p->key) p = p->right;
+       else              return p->val;
+   }
+   return 0;
+  
 }
 
 
-template<typename Key, typename Value>   typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
+template<typename Key, typename Value>   typename RedBlackTree<Key, Value>::Node *
+RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
 { 
    if (p == 0) 
       return new Node(key, value);
 
-   // 2 3 4 tree implementation
- /* if (species == TD234) */
+   // 2 3 4 tree implementation: do the equivalent of splitting a four node.
     if (isRed(p->left) && isRed(p->right))
         colorFlip(p);
 
@@ -199,8 +180,6 @@ template<typename Key, typename Value>   typename RedBlackTree<Key, Value>::Node
       p->left = insert(p->left, key, value); 
    else 
       p->right = insert(p->right, key, value); 
-
- /* if (species == BST) return setN(h); */
 
    if (isRed(p->right))
       p = rotateLeft(p);
