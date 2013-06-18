@@ -30,9 +30,6 @@ template<typename Key, typename Value>  class RedBlackTree {
           this->N = 1;
           this->height = 1;
         }
-
-      private: 
-        friend class RedBlackTree<Key, Value>;  
         int N;            // number of nodes in tree rooted here
         int height;       // height of tree rooted here
         double xc, yc;    // for drawing
