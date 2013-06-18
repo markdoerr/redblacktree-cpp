@@ -1,0 +1,1 @@
+Code is bested on [Robert Sedgwich's talk](http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf "Left Leaning Red Black Tree") and its [java implementation](http://www.cs.princeton.edu/~rs/talks/LLRB/Java/).
