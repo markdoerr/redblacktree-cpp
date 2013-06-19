@@ -1,9 +1,10 @@
 /*
-    Code is based on the dicussion of 2 3 4, 2 3 and red-black trees at http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf
-    and the association java implementation at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. This code
-    uses only the 2 3 4 species of implementation.
+   Code is based on the dicussion of 2 3 4, 2 3 and red-black trees at http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf
+   and the java implementation at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. This code below uses only the 2 3 4 species
+   implementation. 
  */
-
+// TODO: I believe Node::height and Node::N and RedBlackTree::k iRedBlackTree::heightBlack are all only used by the drawing code and can be deleted and the functions
+//that set these values?
 template<typename Key, typename Value>  class RedBlackTree {
         
   private:
@@ -22,19 +23,22 @@ template<typename Key, typename Value>  class RedBlackTree {
           this->key   = key;
           this->value = value;
           this->color = RED;
+          /*
           this->N = 1;
           this->height = 1;
+          */  
         }
+        /*
         int N;            // number of nodes in tree rooted here
         int height;       // height of tree rooted here
-        double xc, yc;    // for drawing
-    
+        */ 
    };
 
-
-   Node *root;            // root of the BST
+   Node *root;           // root of the BST
+   /*
    int k;                // ordinal for drawing
    int heightBLACK;      // black height of tree 
+    
 
    int size(Node *p)
    { 
@@ -45,7 +49,7 @@ template<typename Key, typename Value>  class RedBlackTree {
    { 
       return (p == 0) ? 0 : p->height;  
    }
-
+   */
    Value get(Node *p, Key key);
 
    Key min()
@@ -64,12 +68,11 @@ template<typename Key, typename Value>  class RedBlackTree {
    }
 
    Node *insert(Node *p, Key key, Value value);
-
+   /*
    int height(Node p)
    { 
       return (p == 0) ? 0 : p->height;
    }
-
         
    Node *setN(Node *p)
    {
@@ -79,7 +82,7 @@ template<typename Key, typename Value>  class RedBlackTree {
       else                                    p->height = height(p->right) + 1;
       return p;
    }
-      
+   */   
   Value get(Node x, Key key);
 
   bool isRed(Node *p)
@@ -98,20 +101,24 @@ template<typename Key, typename Value>  class RedBlackTree {
   {  // Make a right-leaning 3-node lean to the left.
      Node *x = p->right;
      p->right = x->left;
-     x->left = setN(p);
+     //x->left = setN(p);
+     x->left = p; 
      x->color      = x->left->color;                   
      x->left->color = RED;                     
-     return setN(x);
+     //return setN(x);
+     return x;
   }
 
   Node *rotateRight(Node *p)
   {  // Make a left-leaning 3-node lean to the right.
      Node *x = p->left;
      p->left = x->right;
-     x->right = setN(p);
+     //x->right = setN(p);
+     x->right = p;
      x->color       = x->right->color;                   
      x->right->color = RED;                     
-     return setN(x);
+     //return setN(x);
+     return x;
   }
 
   Node *moveRedLeft(Node *p)
@@ -150,7 +157,8 @@ template<typename Key, typename Value>  class RedBlackTree {
      if (isRed(p->left) && isRed(p->right))
         colorFlip(p);
 
-     return setN(p);
+     //return setN(p);
+     return p;
   }
  
  public:
@@ -161,12 +169,13 @@ template<typename Key, typename Value>  class RedBlackTree {
    { 
        return (root == 0) ? 0 : size(root.left);
    }
-
+   /*
    int height()
    {  return height(root);  }
 
    int heightB()
    {  return heightBLACK;  }
+   */
 
    bool contains(Key key)
    {  return get(key) != 0;  }
@@ -177,7 +186,7 @@ template<typename Key, typename Value>  class RedBlackTree {
    void put(Key key, Value value)
    {
       root = insert(root, key, value);
-      if (isRed(root)) heightBLACK++;
+    //if (isRed(root)) heightBLACK++;
       root->color = BLACK;
    }
 
@@ -226,7 +235,8 @@ RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Val
    if (isRed(p->left) && isRed(p->left))
       p = rotateRight(p);
 
-   return setN(p);
+   //return setN(p);
+   return p;
 }
 
 
