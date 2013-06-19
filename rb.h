@@ -32,17 +32,12 @@ template<typename Key, typename Value>  class RedBlackTree {
    
    Value get(Node *p, Key key);
 
-   Key min()
-   {  
-      return (root == 0) ? 0 : min(root);
-   }
-
    Key min(Node *p)
    {
       return (p == 0) ? p->key : min(p->left);
    }
 
-   Key max(Node p)
+   Key max(Node *p)
    {
       return (p == 0) ? p->key : max(p->right);
    }
@@ -63,7 +58,7 @@ template<typename Key, typename Value>  class RedBlackTree {
       p->right->color = !p->right->color;
   }
   
-  Node *rotateLeft(Node *p)
+  Node *rotateLeft(Node *p) // TODO: remove inlining
   {  // Make a right-leaning 3-node lean to the left.
      Node *x = p->right;
      p->right = x->left;
@@ -125,12 +120,7 @@ template<typename Key, typename Value>  class RedBlackTree {
  public:
 
    RedBlackTree() {};
-
-   int rootRank()
-   { 
-       return (root == 0) ? 0 : size(root.left);
-   }
-
+   
    bool contains(Key key)
    {  return get(key) != 0;  }
 
@@ -143,7 +133,18 @@ template<typename Key, typename Value>  class RedBlackTree {
       root->color = BLACK;
    }
 
+   Key min()
+   {  
+      return (root == 0) ? 0 : min(root);
+   }
+
+   Key max()
+   {  
+      return (root == 0) ? 0 : max(root);
+   }
+ 
 };
+
 //TODO: return a pair<> or return bool and value by reference
 template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key)
 {
