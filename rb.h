@@ -58,65 +58,15 @@ template<typename Key, typename Value>  class RedBlackTree {
       p->right->color = !p->right->color;
   }
   
-  Node *rotateLeft(Node *p) // TODO: remove inlining
-  {  // Make a right-leaning 3-node lean to the left.
-     Node *x = p->right;
-     p->right = x->left;
-     x->left = p; 
-     x->color      = x->left->color;                   
-     x->left->color = RED;                     
-     return x;
-  }
+  Node *rotateLeft(Node *p);
 
-  Node *rotateRight(Node *p)
-  {  // Make a left-leaning 3-node lean to the right.
-     Node *x = p->left;
-     p->left = x->right;
-     x->right = p;
-     x->color       = x->right->color;                   
-     x->right->color = RED;                     
-     return x;
-  }
+ Node *rotateRight(Node *p);
 
-  Node *moveRedLeft(Node *p)
-  {  // Assuming that h is red and both p->left and p->left->left
-     // are black, make p->left or one of its children red
-     colorFlip(p);
-     if (isRed(p->right->left))
-     { 
-        p->right = rotateRight(p->right);
-        p = rotateLeft(p);
-        colorFlip(p);
-     }
-    return p;
-  }
+ Node *moveRedLeft(Node *p);
 
-  Node *moveRedRight(Node *p)
-  {  // Assuming that h is red and both p->right and p->right->left
-     // are black, make p->right or one of its children red
-     colorFlip(p);
-     if (isRed(p->left->left))
-     { 
-        p = rotateRight(p);
-        colorFlip(p);
-     }
-     return p;
-  }
+ Node *moveRedRight(Node *p);
+ Node *fixUp(Node *p);
 
-  Node *fixUp(Node *p)
-  {
-     if (isRed(p->right))
-        p = rotateLeft(p);
-
-     if (isRed(p->left) && isRed(p->left->left))
-        p = rotateRight(p);
-
-     if (isRed(p->left) && isRed(p->right))
-        colorFlip(p);
-
-     return p;
-  }
- 
  public:
 
    RedBlackTree() {};
@@ -145,6 +95,71 @@ template<typename Key, typename Value>  class RedBlackTree {
  
 };
 
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::rotateLeft(Node *p)
+{  // Make a right-leaning 3-node lean to the left.
+   Node  *x = p->right;
+   p->right = x->left;
+   x->left  = p; 
+   x->color = x->left->color;                   
+   x->left->color = RED;                     
+   return x;
+}
+
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::rotateRight(Node *p)
+{  // Make a left-leaning 3-node lean to the right.
+   Node *x = p->left;
+   p->left = x->right;
+   x->right = p;
+   x->color       = x->right->color;                   
+   x->right->color = RED;                     
+   return x;
+}
+
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedLeft(Node *p)
+{  // Assuming that h is red and both p->left and p->left->left
+   // are black, make p->left or one of its children red
+   colorFlip(p);
+
+   if (isRed(p->right->left)) { 
+
+      p->right = rotateRight(p->right);
+      p = rotateLeft(p);
+      colorFlip(p);
+   }
+  return p;
+}
+
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedRight(Node *p)
+{  // Assuming that h is red and both p->right and p->right->left
+   // are black, make p->right or one of its children red
+   colorFlip(p);
+   if (isRed(p->left->left))
+   { 
+      p = rotateRight(p);
+      colorFlip(p);
+   }
+   return p;
+}
+
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::fixUp(Node *p)
+{
+   if (isRed(p->right))
+      p = rotateLeft(p);
+
+   if (isRed(p->left) && isRed(p->left->left))
+      p = rotateRight(p);
+
+   if (isRed(p->left) && isRed(p->right))
+      colorFlip(p);
+
+   return p;
+}
+ 
 //TODO: return a pair<> or return bool and value by reference
 template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key)
 {
