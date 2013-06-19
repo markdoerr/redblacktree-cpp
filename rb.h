@@ -114,17 +114,17 @@ template<typename Key, typename Value>  class RedBlackTree {
      return setN(x);
   }
 
-  Node *moveRedLeft(Node *h)
+  Node *moveRedLeft(Node *p)
   {  // Assuming that h is red and both p->left and p->left->left
      // are black, make p->left or one of its children red
-     colorFlip(h);
+     colorFlip(p);
      if (isRed(p->right->left))
      { 
         p->right = rotateRight(p->right);
-        p = rotateLeft(h);
-        colorFlip(h);
+        p = rotateLeft(p);
+        colorFlip(p);
      }
-    return h;
+    return p;
   }
 
   Node *moveRedRight(Node *p)
@@ -133,24 +133,24 @@ template<typename Key, typename Value>  class RedBlackTree {
      colorFlip(p);
      if (isRed(p->left->left))
      { 
-        p = rotateRight(h);
-        colorFlip(h);
+        p = rotateRight(p);
+        colorFlip(p);
      }
-     return h;
+     return p;
   }
 
-  Node *fixUp(Node *h)
+  Node *fixUp(Node *p)
   {
      if (isRed(p->right))
-        p = rotateLeft(h);
+        p = rotateLeft(p);
 
      if (isRed(p->left) && isRed(p->left->left))
-        p = rotateRight(h);
+        p = rotateRight(p);
 
      if (isRed(p->left) && isRed(p->right))
-        colorFlip(h);
+        colorFlip(p);
 
-     return setN(h);
+     return setN(p);
   }
  
  public:
