@@ -5,7 +5,7 @@
    and the java implementation at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. This code below uses only the 2 3 4 species
    implementation. 
  */
-// TODO: I believe Node::height and Node::N and RedBlackTree::k iRedBlackTree::heightBlack are all only used by the drawing code and can be deleted and the functions
+// It appears Node::height and Node::N and RedBlackTree::k iRedBlackTree::heightBlack are all only used by the drawing code and can be deleted and the functions
 //that set these values?
 template<typename Key, typename Value>  class RedBlackTree {
         
@@ -57,15 +57,19 @@ template<typename Key, typename Value>  class RedBlackTree {
       p->left->color  = !p->left->color;
       p->right->color = !p->right->color;
   }
-  
+
+  Node *deleteMin(Node *p);
   Node *rotateLeft(Node *p);
 
- Node *rotateRight(Node *p);
+  Node *rotateRight(Node *p);
 
- Node *moveRedLeft(Node *p);
+  Node *moveRedLeft(Node *p);
 
- Node *moveRedRight(Node *p);
- Node *fixUp(Node *p);
+  Node *moveRedRight(Node *p);
+
+  Node *fixUp(Node *p);
+  Node *deleteMax(Node *p);
+
 
  public:
 
@@ -91,6 +95,18 @@ template<typename Key, typename Value>  class RedBlackTree {
    Key max()
    {  
       return (root == 0) ? 0 : max(root);
+   }
+
+   void deleteMin()
+   {
+      root = deleteMin(root);
+      root->color = BLACK;
+   }
+
+   void deleteMax()
+   {
+      root = deleteMax(root);
+      root->color = BLACK;
    }
  
 };
@@ -137,6 +153,7 @@ typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedRight
 {  // Assuming that h is red and both p->right and p->right->left
    // are black, make p->right or one of its children red
    colorFlip(p);
+   
    if (isRed(p->left->left))
    { 
       p = rotateRight(p);
@@ -159,7 +176,46 @@ typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::fixUp(Node *
 
    return p;
 }
- 
+
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMax(Node *p)
+{ 
+    //      if (p->right == 0)
+       //      {  
+       //         if (p->left != 0)
+       //            p->left->color = BLACK;
+       //         return p->left;
+       //      }
+
+   if (isRed(p->left))
+      p = rotateRight(p);
+
+   if (p->right == 0)
+      return 0;
+
+   if (!isRed(p->right) && !isRed(p->right->left))
+      p = moveRedRight(p);
+
+   p->right = deleteMax(p->right);
+
+   return fixUp(p);
+}
+
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Node *p)
+{ 
+   if (p->left == 0)
+      return 0;
+
+   if (!isRed(p->left) && !isRed(p->left.left))
+      p = moveRedLeft(p);
+
+   p->left = deleteMin(p->left);
+
+   return fixUp(p);
+}
+
+
 //TODO: return a pair<> or return bool and value by reference
 template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key)
 {
@@ -170,16 +226,15 @@ template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node
    if (key < p->key)  return get(p->left,  key);
    else              return get(p->right, key);
 */
-   // non-recursive code:
+   // non-recursive
    while (p != 0) {
        if      (key < p->key) p = p->left;
        else if (key > p->key) p = p->right;
-       else              return p->val;
+       else             return p->value;
    }
    return 0;
   
 }
-
 
 template<typename Key, typename Value>   typename RedBlackTree<Key, Value>::Node *
 RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
