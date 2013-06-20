@@ -58,19 +58,17 @@ template<typename Key, typename Value>  class RedBlackTree {
       p->right->color = !p->right->color;
   }
 
-  Node *deleteMin(Node *p);
   Node *rotateLeft(Node *p);
-
   Node *rotateRight(Node *p);
-
+  
   Node *moveRedLeft(Node *p);
-
   Node *moveRedRight(Node *p);
 
-  Node *fixUp(Node *p);
   Node *deleteMax(Node *p);
-
-
+  Node *deleteMin(Node *p);
+  
+  Node *fixUp(Node *p);
+  
  public:
 
    RedBlackTree() {};
