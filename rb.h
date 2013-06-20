@@ -1,13 +1,22 @@
 #ifndef RBTREE_SDFSEWRSDPGSCP
 #define RBTREE_SDFSEWRSDPGSCP
+#include <exception>
 /*
    Code is based on the dicussion of 2 3 4 trees, 2 3 trees and red-black trees found at http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf
    and the corresponding java implementation found at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. 
    The code below uses only the 2 3 4 species of implementation. 
  */
 
-// Comment to myself: It appears Node::height and Node::N and RedBlackTree::k iRedBlackTree::heightBlack are all used by only the drawing code and can be
-// safe;y deleted
+// Comment to myself: It appears Node::height and Node::N and RedBlackTree::heightBlack are used by only the drawing code and can be
+// safely deleted
+class KeyDoesnotExist :  public std::exception {
+public:
+  virtual const char* what() const throw()
+  {
+    return "Key does not exist in tree";
+  }
+};
+
 template<typename Key, typename Value>  class RedBlackTree {
         
   private:
@@ -31,7 +40,7 @@ template<typename Key, typename Value>  class RedBlackTree {
 
    Node *root;           // root of the BST
    
-   Value get(Node *p, Key key);
+   Value get(Node *p, Key key) throw(KeyDoesnotExist);
 
    Key min(Node *p)
    {
@@ -45,8 +54,6 @@ template<typename Key, typename Value>  class RedBlackTree {
 
    Node *insert(Node *p, Key key, Value value);
       
-  Value get(Node x, Key key);
-
   bool isRed(Node *p)
   {
       return (p == 0) ? false : (p->color == RED);
@@ -174,7 +181,7 @@ typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedRight
 }
 
 template<typename Key, typename Value>  
-typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::fixUp(Node *p)
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::fixUp(Node *p)
 {
    if (isRed(p->right))
       p = rotateLeft(p);
@@ -271,11 +278,11 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
 
 
 //TODO: possibly return a pair<> or return bool and value by reference
-template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key)
+template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key) throw(KeyDoesnotExist)
 {
     
 /* alternate, recursive code
-   if (p == 0)    return 0;
+   if (p == 0) {   ValueNotFound(key);}
    if (key == p->key) return p->value;
    if (key < p->key)  return get(p->left,  key);
    else              return get(p->right, key);
@@ -286,7 +293,8 @@ template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node
        else if (key > p->key) p = p->right;
        else             return p->value;
    }
-   return 0;
+   throw KeyDoesnotExist();
+   //return 0;
   
 }
 
