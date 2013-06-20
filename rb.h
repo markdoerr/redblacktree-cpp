@@ -1,12 +1,13 @@
 #ifndef RBTREE_SDFSEWRSDPGSCP
 #define RBTREE_SDFSEWRSDPGSCP
 /*
-   Code is based on the dicussion of 2 3 4, 2 3 and red-black trees at http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf
-   and the java implementation at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. This code below uses only the 2 3 4 species
-   implementation. 
+   Code is based on the dicussion of 2 3 4 trees, 2 3 trees and red-black trees found at http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf
+   and the corresponding java implementation found at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. 
+   The code below uses only the 2 3 4 species of implementation. 
  */
-// It appears Node::height and Node::N and RedBlackTree::k iRedBlackTree::heightBlack are all only used by the drawing code and can be deleted and the functions
-//that set these values?
+
+// Comment to myself: It appears Node::height and Node::N and RedBlackTree::k iRedBlackTree::heightBlack are all used by only the drawing code and can be
+// safe;y deleted
 template<typename Key, typename Value>  class RedBlackTree {
         
   private:
@@ -69,6 +70,8 @@ template<typename Key, typename Value>  class RedBlackTree {
   
   Node *fixUp(Node *p);
   
+  template<typename Functor> void traverse(Functor f, Node *root);
+
  public:
 
    RedBlackTree() {};
@@ -84,6 +87,8 @@ template<typename Key, typename Value>  class RedBlackTree {
       root = insert(root, key, value);
       root->color = BLACK;
    }
+
+   template<typename Functor> void traverse(Functor f);
 
    Key min()
    {  
@@ -106,7 +111,7 @@ template<typename Key, typename Value>  class RedBlackTree {
       root = deleteMax(root);
       root->color = BLACK;
    }
- 
+    
 };
 
 template<typename Key, typename Value>  
@@ -258,5 +263,25 @@ RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Val
       p = rotateRight(p);
 
    return p;
+}
+template<typename Key, typename Value> template<typename Functor> inline void RedBlackTree<Key, Value>::traverse(Functor f)
+{
+   return traverse(f, root);
+}
+
+/* in order traversal */
+template<typename Key, typename Value>  template<typename Functor> void RedBlackTree<Key, Value>::traverse(Functor f, RedBlackTree<Key, Value>::Node *root)
+{
+  if (root == 0) {
+
+	return;
+   }
+
+   traverse(f, root->left);
+
+   f(root->value); 
+
+   traverse(f, root->right);
+
 }
 #endif
