@@ -35,12 +35,12 @@ template<typename Key, typename Value>  class RedBlackTree {
 
    Key min(Node *p)
    {
-      return (p == 0) ? p->key : min(p->left);
+      return (p->left == 0) ? p->key : min(p->left);
    }
 
    Key max(Node *p)
    {
-      return (p == 0) ? p->key : max(p->right);
+      return (p->right == 0) ? p->key : max(p->right);
    }
 
    Node *insert(Node *p, Key key, Value value);
@@ -69,6 +69,8 @@ template<typename Key, typename Value>  class RedBlackTree {
   Node *deleteMin(Node *p);
   
   Node *fixUp(Node *p);
+
+  Node *remove(Node *p, Key key);
   
   template<typename Functor> void traverse(Functor f, Node *root);
 
@@ -112,6 +114,12 @@ template<typename Key, typename Value>  class RedBlackTree {
       root->color = BLACK;
    }
     
+   void remove(Key key)
+   { 
+      root = remove(root, key);
+      root->color = BLACK;
+   }
+
 };
 
 template<typename Key, typename Value>  
@@ -210,7 +218,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
    if (p->left == 0)
       return 0;
 
-   if (!isRed(p->left) && !isRed(p->left.left))
+   if (!isRed(p->left) && !isRed(p->left->left))
       p = moveRedLeft(p);
 
    p->left = deleteMin(p->left);
@@ -218,8 +226,51 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
    return fixUp(p);
 }
 
+template<typename Key, typename Value>  
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *p, Key key)
+{ 
+   if (key < p->key) 
+   {
+      if (!isRed(p->left) && !isRed(p->left->left)) {
 
-//TODO: return a pair<> or return bool and value by reference
+         p = moveRedLeft(p);
+      } 
+      p->left =  remove(p->left, key);
+   }
+   else {
+
+      if (isRed(p->left)) {
+
+         p = rotateRight(p);
+      }
+
+      if ((key == p->key) && (p->right == 0)) {
+
+         return 0;
+      }  
+
+      if (!isRed(p->right) && !isRed(p->right->left)) {
+
+         p = moveRedRight(p);
+      } 
+
+      if (key == p->key) {
+
+         p->value = get(p->right, min(p->right));
+         p->key = min(p->right);
+         p->right = deleteMin(p->right);
+      }
+      else {
+
+         p->right = remove(p->right, key);
+      }
+   }
+
+   return fixUp(p);
+}
+
+
+//TODO: possibly return a pair<> or return bool and value by reference
 template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key)
 {
     
