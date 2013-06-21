@@ -42,7 +42,7 @@ template<typename Key, typename Value>  class RedBlackTree {
    
    Value get(Node *p, Key key) throw(KeyDoesnotExist);
 
-   Node *getInOrderSuccessor(Node *p);
+   Node *getInOrderSuccessorNode(Node *p);
          
    /*
     * Returns minimum key of subtree rooted at p
@@ -274,7 +274,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
          p->key = min(p->right);    // Set key of p to be key of in-order successor     
          */
          /* Kurt added */
-         Node *successor = getInOrderSuccessor(p);
+         Node *successor = getInOrderSuccessorNode(p);
          p->value  = successor->value;
          p->key    = successor->key;
 
@@ -316,7 +316,7 @@ template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node
  * Returns in order successor of node p.
  */
 template<typename Key, typename Value>
-typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessor(RedBlackTree<Key, Value>::Node *p)
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessorNode(RedBlackTree<Key, Value>::Node *p)
 {
   p = p->right;
 
