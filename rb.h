@@ -20,9 +20,7 @@ public:
 template<typename Key, typename Value>  class RedBlackTree {
         
   private:
-    enum { BLACK = false, RED = true};
-   
-    class Node {
+     Node {
       public:    
         Key   key;            // key
         Value value;          // associated data
@@ -42,6 +40,9 @@ template<typename Key, typename Value>  class RedBlackTree {
    
    Value get(Node *p, Key key) throw(KeyDoesnotExist);
 
+   /*
+    * Returns minimum key of subtree rooted at p
+    */ 
    Key min(Node *p)
    {
       return (p->left == 0) ? p->key : min(p->left);
@@ -236,15 +237,16 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *p, Key key)
 { 
-   if (key < p->key) 
-   {
+   if (key < p->key) {
+
       if (!isRed(p->left) && !isRed(p->left->left)) {
 
          p = moveRedLeft(p);
       } 
-      p->left =  remove(p->left, key);
-   }
-   else {
+
+      p->left = remove(p->left, key);
+
+   } else {
 
       if (isRed(p->left)) {
 
@@ -263,11 +265,13 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
 
       if (key == p->key) {
 
-         p->value = get(p->right, min(p->right));
-         p->key = min(p->right);
+         p->value = get(p->right, min(p->right)); // Set the value of p to be value in-order successor of key
+
+         p->key = min(p->right);    // Set key of p to be key of in-order successor     
+
          p->right = deleteMin(p->right);
-      }
-      else {
+
+      } else {
 
          p->right = remove(p->right, key);
       }
@@ -277,7 +281,9 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
 }
 
 
-//TODO: possibly return a pair<> or return bool and value by reference
+/*
+ * Returns key's associated value. The search for key starts in the subtree rooted at p.
+ */
 template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key) throw(KeyDoesnotExist)
 {
     
