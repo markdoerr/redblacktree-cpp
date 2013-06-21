@@ -20,9 +20,7 @@ public:
 template<typename Key, typename Value>  class RedBlackTree {
         
   private:
-  enum { BLACK = false, RED = true}; 
-
-   class  Node {
+     Node {
       public:    
         Key   key;            // key
         Value value;          // associated data
@@ -42,8 +40,6 @@ template<typename Key, typename Value>  class RedBlackTree {
    
    Value get(Node *p, Key key) throw(KeyDoesnotExist);
 
-   Node *getInOrderSuccessor(Node *p);
-         
    /*
     * Returns minimum key of subtree rooted at p
     */ 
@@ -268,15 +264,10 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
       } 
 
       if (key == p->key) {
-         /* Kurt commented out 
+
          p->value = get(p->right, min(p->right)); // Set the value of p to be value in-order successor of key
 
          p->key = min(p->right);    // Set key of p to be key of in-order successor     
-         */
-         /* Kurt added */
-         Node *successor = getInOrderSuccessor(p);
-         p->value  = successor->value;
-         p->key    = successor->key;
 
          p->right = deleteMin(p->right);
 
@@ -312,23 +303,9 @@ template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node
    //return 0;
   
 }
-/*
- * Returns in order successor of node p.
- */
-template<typename Key, typename Value>
-typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessor(RedBlackTree<Key, Value>::Node *p)
-{
-  p = p->right;
 
-  while (p != 0) {
-
-      p = p->left;
-  }
-  return p;
-}
-
-template<typename Key, typename Value>
-typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
+template<typename Key, typename Value>   typename RedBlackTree<Key, Value>::Node *
+RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
 { 
    if (p == 0) 
       return new Node(key, value);
