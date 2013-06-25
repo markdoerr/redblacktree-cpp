@@ -5,6 +5,10 @@
    Code is based on the dicussion of 2 3 4 trees, 2 3 trees and red-black trees found at http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf
    and the corresponding java implementation found at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. 
    The code below uses only the 2 3 4 species of implementation. 
+
+The relationship between 2 3 4 trees and red black tree is also discussed at:
+http://cw.felk.cvut.cz/lib/exe/fetch.php/courses/a4m33pal/paska12x.pdf and
+http://www.cs.princeton.edu/courses/archive/spr07/cos226/lectures/balanced.pdf
  */
 
 // Comment to myself: It appears Node::height and Node::N and RedBlackTree::heightBlack are used by only the drawing code and can be
@@ -20,11 +24,13 @@ public:
 template<typename Key, typename Value>  class RedBlackTree {
         
   private:
-     Node {
+  enum { BLACK = false, RED = true}; 
+
+   class  Node {
       public:    
         Key   key;            // key
         Value value;          // associated data
-        Node *left;            // left...
+        Node *left;           // left...
         Node *right;          // ...and right subtrees
         bool color;           // color of parent link
 
@@ -40,6 +46,8 @@ template<typename Key, typename Value>  class RedBlackTree {
    
    Value get(Node *p, Key key) throw(KeyDoesnotExist);
 
+   Node *getInOrderSuccessorNode(Node *p);
+         
    /*
     * Returns minimum key of subtree rooted at p
     */ 
@@ -154,7 +162,7 @@ typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::rotateRight(
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedLeft(Node *p)
-{  // Assuming that h is red and both p->left and p->left->left
+{  // Assuming that p is red and both p->left and p->left->left
    // are black, make p->left or one of its children red
    colorFlip(p);
 
@@ -169,7 +177,7 @@ typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedLeft(
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedRight(Node *p)
-{  // Assuming that h is red and both p->right and p->right->left
+{  // Assuming that p is red and both p->right and p->right->left
    // are black, make p->right or one of its children red
    colorFlip(p);
    
@@ -190,7 +198,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::fixUp(Node *p
    if (isRed(p->left) && isRed(p->left->left))
       p = rotateRight(p);
 
-   if (isRed(p->left) && isRed(p->right))
+   if (isRed(p->left) && isRed(p->right)) // four node
       colorFlip(p);
 
    return p;
@@ -229,11 +237,17 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
    if (!isRed(p->left) && !isRed(p->left->left))
       p = moveRedLeft(p);
 
+   Node *ptemp = p->left; // Kurt added. All nodes have one element, are "two nodes" 
+
    p->left = deleteMin(p->left);
+
+   delete ptemp; // Kurt added
 
    return fixUp(p);
 }
-
+/*
+ *
+ */
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *p, Key key)
 { 
@@ -264,12 +278,17 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
       } 
 
       if (key == p->key) {
-
+         /* Kurt commented out 
          p->value = get(p->right, min(p->right)); // Set the value of p to be value in-order successor of key
 
          p->key = min(p->right);    // Set key of p to be key of in-order successor     
+         */
+         /* Kurt added */
+         Node *successor = getInOrderSuccessorNode(p);
+         p->value  = successor->value;  // Assign p in-order successor key and value
+         p->key    = successor->key;
 
-         p->right = deleteMin(p->right);
+         p->right = deleteMin(p->right); // <-- deleteMin() appears to be where C++ delete should occur. 
 
       } else {
 
@@ -303,9 +322,23 @@ template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node
    //return 0;
   
 }
+/*
+ * Returns in order successor of node p.
+ */
+template<typename Key, typename Value>
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessorNode(RedBlackTree<Key, Value>::Node *p)
+{
+  p = p->right;
 
-template<typename Key, typename Value>   typename RedBlackTree<Key, Value>::Node *
-RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
+  while (p != 0) {
+
+      p = p->left;
+  }
+  return p;
+}
+
+template<typename Key, typename Value>
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
 { 
    if (p == 0) 
       return new Node(key, value);
@@ -337,16 +370,14 @@ template<typename Key, typename Value> template<typename Functor> inline void Re
 /* in order traversal */
 template<typename Key, typename Value>  template<typename Functor> void RedBlackTree<Key, Value>::traverse(Functor f, RedBlackTree<Key, Value>::Node *root)
 {
-  if (root == 0) {
+  if (root == 0) { 
+         return; 
+  }
 
-	return;
-   }
+  traverse(f, root->left);
 
-   traverse(f, root->left);
+  f(root->value); 
 
-   f(root->value); 
-
-   traverse(f, root->right);
-
+  traverse(f, root->right);
 }
 #endif
