@@ -357,7 +357,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBla
    if (isRed(p->right))
       p = rotateLeft(p);
 
-   if (isRed(p->left) && isRed(p->left))
+   if (isRed(p->left) && isRed(p->left->left))
       p = rotateRight(p);
 
    return p;
