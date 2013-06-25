@@ -162,7 +162,7 @@ typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::rotateRight(
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedLeft(Node *p)
-{  // Assuming that h is red and both p->left and p->left->left
+{  // Assuming that p is red and both p->left and p->left->left
    // are black, make p->left or one of its children red
    colorFlip(p);
 
@@ -177,7 +177,7 @@ typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedLeft(
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedRight(Node *p)
-{  // Assuming that h is red and both p->right and p->right->left
+{  // Assuming that p is red and both p->right and p->right->left
    // are black, make p->right or one of its children red
    colorFlip(p);
    
@@ -198,7 +198,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::fixUp(Node *p
    if (isRed(p->left) && isRed(p->left->left))
       p = rotateRight(p);
 
-   if (isRed(p->left) && isRed(p->right))
+   if (isRed(p->left) && isRed(p->right)) // four node
       colorFlip(p);
 
    return p;
@@ -237,7 +237,11 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
    if (!isRed(p->left) && !isRed(p->left->left))
       p = moveRedLeft(p);
 
+   Node *ptemp = p->left; // Kurt added. All nodes have one element, are "two nodes" 
+
    p->left = deleteMin(p->left);
+
+   delete ptemp; // Kurt added
 
    return fixUp(p);
 }
@@ -281,10 +285,10 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
          */
          /* Kurt added */
          Node *successor = getInOrderSuccessorNode(p);
-         p->value  = successor->value;
+         p->value  = successor->value;  // Assign p in-order successor key and value
          p->key    = successor->key;
 
-         p->right = deleteMin(p->right);
+         p->right = deleteMin(p->right); // <-- deleteMin() appears to be where C++ delete should occur. 
 
       } else {
 
