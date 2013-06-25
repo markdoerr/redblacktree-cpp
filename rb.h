@@ -237,11 +237,11 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
    if (!isRed(p->left) && !isRed(p->left->left))
       p = moveRedLeft(p);
 
-   Node *ptemp = p->left; // Kurt added. All nodes have one element, are "two nodes" 
+   Node *ptemp = p->left; // <-- req'd for C++ 
 
    p->left = deleteMin(p->left);
 
-   delete ptemp; // Kurt added
+   delete ptemp; // req'd for C++
 
    return fixUp(p);
 }
@@ -278,12 +278,12 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
       } 
 
       if (key == p->key) {
-         /* Kurt commented out 
+         /* 
          p->value = get(p->right, min(p->right)); // Set the value of p to be value in-order successor of key
 
          p->key = min(p->right);    // Set key of p to be key of in-order successor     
          */
-         /* Kurt added */
+         /* added instead */
          Node *successor = getInOrderSuccessorNode(p);
          p->value  = successor->value;  // Assign p in-order successor key and value
          p->key    = successor->key;
