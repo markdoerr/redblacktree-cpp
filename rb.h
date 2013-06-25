@@ -325,7 +325,7 @@ template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node
 /*
  * Returns in order successor of node p.
  */
-template<typename Key, typename Value>
+template<typename Key, typename Value> inline
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessorNode(RedBlackTree<Key, Value>::Node *p)
 {
   p = p->right;
