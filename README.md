@@ -1,4 +1,6 @@
-Code is bested on [Robert Sedgwich's talk](http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf "Left Leaning Red Black Tree") and its [java implementation](http://www.cs.princeton.edu/~rs/talks/LLRB/Java/).
+TODO: remove(Node *p, Key key) is broken. Mu8st actually call delete bc C++ does not have garbage collection.
+
+Code is based on [Robert Sedgwich's talk](http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf "Left Leaning Red Black Tree") and its [java implementation](http://www.cs.princeton.edu/~rs/talks/LLRB/Java/).
 
 Other C++ implementations:
 http://larryvdh.com/blog/red-black-tree-implementation/
@@ -10,4 +12,6 @@ Other Explanations:
 [Carrano pdf](http://www.csce.uark.edu/~jgauch/2014/slides_6th/ch19.pdf)
 
 Another thorough [discussion](http://staff.ustc.edu.cn/~csli/graduate/algorithms/book6/chap14.htm) with pseudo code.
+
+[Delete discussion](http://www.cs.purdue.edu/homes/ayg/CS251/slides/chap13c.pdf)
 
