@@ -29,7 +29,7 @@ template<typename Key, typename Value>  class RedBlackTree {
    class  Node {
       public:    
         Key   key;            // key
-        Value value;          // associated data
+        Value value;          // its associated data
         Node *left;           // left...
         Node *right;          // ...and right subtrees
         bool color;           // color of parent link
@@ -94,7 +94,8 @@ template<typename Key, typename Value>  class RedBlackTree {
 
  public:
 
-   RedBlackTree() {};
+   RedBlackTree() { root = 0; }
+   
   ~RedBlackTree();
    
    bool contains(Key key)
@@ -136,6 +137,7 @@ template<typename Key, typename Value>  class RedBlackTree {
    void remove(Key key)
    { 
       root = remove(root, key);
+      if (root == 0) return;
       root->color = BLACK;
    }
 
@@ -148,14 +150,15 @@ template<typename Key, typename Value> inline RedBlackTree<Key, Value>::~RedBlac
 /*
  *  Do post order traversal deleting nodes.
  */
-template<typename Key, typename Value> void RedBlackTree<Key, Value>::DestroyTree(Node *root)
+template<typename Key, typename Value> void RedBlackTree<Key, Value>::DestroyTree(Node *current)
 {
-    if ((root->left == 0) && (root->right == 0)) return;
+    if (current == 0) return;
     
-    DestroyTree(root->left); 
-    DestroyTree(root->right);
+    DestroyTree(current->left); 
+    DestroyTree(current->right);
     
-    delete root;
+    delete current;
+    current = 0;
 }    
 
 template<typename Key, typename Value>  

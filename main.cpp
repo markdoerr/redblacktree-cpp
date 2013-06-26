@@ -28,6 +28,9 @@ int main(int argc, char** argv)
     RBPrinter tree_printer(cout);
     
     tree.traverse(tree_printer);
+    
+    cout << "\n------" << endl;
+    
 
     for (int i = 1; i < 25; i++) {
     
