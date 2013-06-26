@@ -47,6 +47,8 @@ template<typename Key, typename Value>  class RedBlackTree {
    Value get(Node *p, Key key) throw(KeyDoesnotExist);
 
    Node *getInOrderSuccessorNode(Node *p);
+   
+   void DestroyTree(Node *root);
          
    /*
     * Returns minimum key of subtree rooted at p
@@ -93,6 +95,7 @@ template<typename Key, typename Value>  class RedBlackTree {
  public:
 
    RedBlackTree() {};
+  ~RedBlackTree();
    
    bool contains(Key key)
    {  return get(key) != 0;  }
@@ -138,8 +141,25 @@ template<typename Key, typename Value>  class RedBlackTree {
 
 };
 
+template<typename Key, typename Value> inline RedBlackTree<Key, Value>::~RedBlackTree()
+{
+   DestroyTree(root);    
+}
+/*
+ *  Do post order traversal deleting nodes.
+ */
+template<typename Key, typename Value> void RedBlackTree<Key, Value>::DestroyTree(Node *root)
+{
+    if ((root->left == 0) && (root->right == 0)) return;
+    
+    DestroyTree(root->left); 
+    DestroyTree(root->right);
+    
+    delete root;
+}    
+
 template<typename Key, typename Value>  
-typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::rotateLeft(Node *p)
+typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::rotateLeft(Node *p)
 {  // Make a right-leaning 3-node lean to the left.
    Node  *x = p->right;
    p->right = x->left;
