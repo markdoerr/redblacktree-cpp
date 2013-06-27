@@ -138,6 +138,7 @@ template<typename Key, typename Value>  class RedBlackTree {
    { 
       if (root == 0) return;
       root = remove(root, key);
+      if (root == 0) return;
       root->color = BLACK;
    }
 
@@ -230,13 +231,6 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::fixUp(Node *p
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMax(Node *p)
 { 
-    //      if (p->right == 0)
-       //      {  
-       //         if (p->left != 0)
-       //            p->left->color = BLACK;
-       //         return p->left;
-       //      }
-
    if (isRed(p->left))
       p = rotateRight(p);
 
@@ -291,7 +285,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
       }
 
       if ((key == p->key) && (p->right == 0)) {
-
+         // should  
          return 0;
       }  
 
@@ -301,12 +295,12 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
       } 
 
       if (key == p->key) {
-         /* 
+         /*  
          p->value = get(p->right, min(p->right)); // Set the value of p to be value in-order successor of key
 
          p->key = min(p->right);    // Set key of p to be key of in-order successor     
          */
-         /* added instead */
+         /* added instead of code above */
          Node *successor = getInOrderSuccessorNode(p);
          p->value  = successor->value;  // Assign p in-order successor key and value
          p->key    = successor->key;
@@ -322,32 +316,27 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
    return fixUp(p);
 }
 
-
 /*
  * Returns key's associated value. The search for key starts in the subtree rooted at p.
  */
 template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node *p, Key key) throw(KeyDoesnotExist)
 {
     
-/* alternate, recursive code
+/* alternate recursive code
    if (p == 0) {   ValueNotFound(key);}
    if (key == p->key) return p->value;
    if (key < p->key)  return get(p->left,  key);
    else              return get(p->right, key);
 */
-   // non-recursive
+   // non-recursive version
    while (p != 0) {
        if      (key < p->key) p = p->left;
        else if (key > p->key) p = p->right;
        else             return p->value;
    }
    throw KeyDoesnotExist();
-   //return 0;
-  
 }
-/*
- * Returns in order successor of node p.
- */
+
 template<typename Key, typename Value> inline
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessorNode(RedBlackTree<Key, Value>::Node *p)
 {
@@ -366,7 +355,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBla
    if (p == 0) 
       return new Node(key, value);
 
-   // 2 3 4 tree implementation: do the equivalent of splitting a four node.
+   // 2 3 4 tree analogue that does do the equivalent of splitting a four node.
     if (isRed(p->left) && isRed(p->right))
         colorFlip(p);
 
