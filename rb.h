@@ -162,7 +162,6 @@ template<typename Key, typename Value> void RedBlackTree<Key, Value>::DestroyTre
     DestroyTree(current->right);
     
     delete current;
-    current = 0;
 }    
 
 template<typename Key, typename Value>  
@@ -265,9 +264,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
 
    return fixUp(p);
 }
-/*
- *
- */
+
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *p, Key key)
 { 
@@ -357,8 +354,10 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBla
 { 
    if (p == 0) 
       return new Node(key, value);
-
-   // 2 3 4 tree analogue that does do the equivalent of splitting a four node.
+ 
+   /*
+    * This test checks for a 4 node (viewing the left-leaning rb tree as a 2 3 4 tree) and splits it.
+    */
     if (isRed(p->left) && isRed(p->right))
         colorFlip(p);
 
