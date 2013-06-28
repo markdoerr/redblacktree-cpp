@@ -137,9 +137,12 @@ template<typename Key, typename Value>  class RedBlackTree {
    void remove(Key key)
    { 
       if (root == 0) return;
+
       root = remove(root, key);
-      if (root == 0) return;
-      root->color = BLACK;
+
+      if (root != 0) { 
+        root->color = BLACK;
+      }
    }
 
 };
