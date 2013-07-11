@@ -1,5 +1,5 @@
 Code is based on [Robert Sedgwich's talk](http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf "Left Leaning Red Black Tree") and its [java implementation](http://www.cs.princeton.edu/~rs/talks/LLRB/Java/).
-In the rb.h version the invariant checking methods have been removed. rb-inv.h, which is incomplete and untested, includes them.:wq
+In the rb.h version the invariant checking methods have been removed.
 
 Other C++ implementations:
 http://larryvdh.com/blog/red-black-tree-implementation/
