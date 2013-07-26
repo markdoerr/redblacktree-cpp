@@ -7,14 +7,17 @@
 
 #include <cstdlib>
 #include "rb.h"
-#include "treeprinter.h"
 #include <iostream>
 
-using namespace std;
 
 /*
  * 
  */
+
+inline void int_out(int i)
+{
+  std::cout << i << ' ';
+}
 
 int main(int argc, char** argv) 
 {
@@ -25,18 +28,17 @@ int main(int argc, char** argv)
         tree.put(i, i);
     }
     
-    RBPrinter tree_printer(cout);
+       
+    tree.traverse(int_out);
     
-    tree.traverse(tree_printer);
-    
-    cout << "\n------" << endl;
+    std::cout << "\n------" << std::endl;
     
 
     for (int i = 1; i < 25; i++) {
     
         tree.remove(i);
-        tree.traverse(tree_printer);
-        cout << "\n---------"   << endl;
+        tree.traverse(int_out);
+        std::cout << "\n---------"   << std::endl;
     }
     
     
