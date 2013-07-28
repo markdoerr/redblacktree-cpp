@@ -96,7 +96,7 @@ template<typename Key, typename Value>  class RedBlackTree {
 
    RedBlackTree() { root = 0; }
    
-  ~RedBlackTree();
+  ~RedBlackTree() { DestroyTree(root); }
    
    bool contains(Key key)
    {  return get(key) != 0;  }
@@ -147,10 +147,6 @@ template<typename Key, typename Value>  class RedBlackTree {
 
 };
 
-template<typename Key, typename Value> inline RedBlackTree<Key, Value>::~RedBlackTree()
-{
-   DestroyTree(root);    
-}
 /*
  *  Do post order traversal deleting nodes.
  */
