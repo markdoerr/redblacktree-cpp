@@ -351,19 +351,19 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBla
    if (p == 0) 
       return new Node(key, value);
  
-   /*
-    * This test checks for a 4 node (viewing the left-leaning rb tree as a 2 3 4 tree) and splits it.
-    */
+   /* We view the left-leaning red black tree as a 2 3 4 tree. So first check if p is a
+    * 4 node and needs to be "split" by flipping colors.  */
     if (isRed(p->left) && isRed(p->right))
         colorFlip(p);
 
-   if (key == p->key)
+   if (key == p->key)     /* if key already exists, overwrite its value */
       p->value = value;
-   else if (key < p->key) 
+   else if (key < p->key) /* otherwise recurse */
       p->left = insert(p->left, key, value); 
    else 
       p->right = insert(p->right, key, value); 
 
+   /* rebalance tree */
    if (isRed(p->right))
       p = rotateLeft(p);
 
