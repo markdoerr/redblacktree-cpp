@@ -353,8 +353,8 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBla
  
    /* We view the left-leaning red black tree as a 2 3 4 tree. So first check if p is a
     * 4 node and needs to be "split" by flipping colors.  */
-    if (isRed(p->left) && isRed(p->right))
-        colorFlip(p);
+   if (isRed(p->left) && isRed(p->right))
+       colorFlip(p);
 
    if (key == p->key)     /* if key already exists, overwrite its value */
       p->value = value;
