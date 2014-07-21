@@ -269,11 +269,11 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Nod
    if (!isRed(p->left) && !isRed(p->left->left))
       p = moveRedLeft(p);
 
-   //--Node *ptemp = p->left; // <-- req'd for C++ 
+   Node *ptemp = p->left; // <-- req'd for C++ 
 
    p->left = deleteMin(p->left);
 
-   //--delete ptemp; // req'd for C++
+   delete ptemp; // req'd for C++
 
    return fixUp(p);
 }
@@ -318,9 +318,7 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
          p->value  = successor->value;  // Assign p in-order successor key and value
          p->key    = successor->key;
 
-         p->right = deleteMin(p->right); 
-
-         delete successor;
+         p->right = deleteMin(p->right); // <-- deleteMin() appears to be where C++ delete should occur. 
 
       } else {
 
@@ -356,20 +354,12 @@ template<typename Key, typename Value> inline
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessorNode(RedBlackTree<Key, Value>::Node *p)
 {
   p = p->right;
-  /*
+
   while (p != 0) {
 
       p = p->left;
   }
   return p;
-  */
-  while (p->left != 0) {
-
-      p = p->left;
-  }
-
-  return p;
-
 }
 
 template<typename Key, typename Value>

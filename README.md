@@ -1,6 +1,8 @@
 Code is based on [Robert Sedgwich's talk](http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf "Left Leaning Red Black Tree") and its [java implementation](http://www.cs.princeton.edu/~rs/talks/LLRB/Java/).
 This C++ version has the invariant checking methods that were in the java implementation removed.
 
+There is a bug in the code. I believe when delete is called.
+
 Other C++ implementations:
 http://larryvdh.com/blog/red-black-tree-implementation/
 
