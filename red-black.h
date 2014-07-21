@@ -1,6 +1,7 @@
-#ifndef RBTREE_SDFSEWRSDPGSCP
-#define RBTREE_SDFSEWRSDPGSCP
+#ifndef REDBLACK_SDFSEWRSDPGSCP
+#define REDBLACK_SDFSEWRSDPGSCP
 #include <exception>
+
 /*
    Code is based on the dicussion of 2 3 4 trees, 2 3 trees and red-black trees found at http://www.cs.princeton.edu/~rs/talks/LLRB/RedBlack.pdf
    and the corresponding java implementation found at http://www.cs.princeton.edu/~rs/talks/LLRB/Java/. 
@@ -162,49 +163,65 @@ template<typename Key, typename Value> void RedBlackTree<Key, Value>::DestroyTre
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::rotateLeft(Node *p)
-{  // Make a right-leaning 3-node lean to the left.
+{  
+   // Make a right-leaning 3-node lean to the left.
    Node  *x = p->right;
+
    p->right = x->left;
+
    x->left  = p; 
+
    x->color = x->left->color;                   
+
    x->left->color = RED;                     
+
    return x;
 }
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::rotateRight(Node *p)
-{  // Make a left-leaning 3-node lean to the right.
+{  
+   // Make a left-leaning 3-node lean to the right.
    Node *x = p->left;
+
    p->left = x->right;
+
    x->right = p;
-   x->color       = x->right->color;                   
+
+   x->color  = x->right->color;                   
+
    x->right->color = RED;                     
+
    return x;
 }
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedLeft(Node *p)
-{  // Assuming that p is red and both p->left and p->left->left
-   // are black, make p->left or one of its children red
-   colorFlip(p);
+{  
+  // Assuming that p is red and both p->left and p->left->left
+  // are black, make p->left or one of its children red
+  colorFlip(p);
 
-   if (isRed(p->right->left)) { 
+  if (isRed(p->right->left)) { 
 
       p->right = rotateRight(p->right);
+
       p = rotateLeft(p);
+
       colorFlip(p);
-   }
+  }
   return p;
 }
 
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node * RedBlackTree<Key, Value>::moveRedRight(Node *p)
-{  // Assuming that p is red and both p->right and p->right->left
+{  
+   // Assuming that p is red and both p->right and p->right->left
    // are black, make p->right or one of its children red
    colorFlip(p);
    
-   if (isRed(p->left->left))
-   { 
+   if (isRed(p->left->left)) { 
+
       p = rotateRight(p);
       colorFlip(p);
    }

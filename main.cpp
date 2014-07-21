@@ -6,13 +6,8 @@
  */
 
 #include <cstdlib>
-#include "rb.h"
+#include "red-black.h"
 #include <iostream>
-
-
-/*
- * 
- */
 
 inline void int_out(int i)
 {
@@ -27,7 +22,6 @@ int main(int argc, char** argv)
     
         tree.put(i, i);
     }
-    
        
     tree.traverse(int_out);
     
@@ -41,7 +35,5 @@ int main(int argc, char** argv)
         std::cout << "\n---------"   << std::endl;
     }
     
-    
     return 0;
 }
-
