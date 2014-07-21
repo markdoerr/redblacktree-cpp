@@ -9,7 +9,10 @@
 
 The relationship between 2 3 4 trees and red black tree is also discussed at:
 http://cw.felk.cvut.cz/lib/exe/fetch.php/courses/a4m33pal/paska12x.pdf and
-http://www.cs.princeton.edu/courses/archive/spr07/cos226/lectures/balanced.pdf
+http://www.cs.princeton.edu/courses/archive/sprnullptr7/cos226/lectures/balanced.pdf
+
+A C++ implementation is also at: 
+http://www.teachsolaisgames.com/articles/balanced_left_leaning.html
  */
 
 // Comment to myself: It appears Node::height and Node::N and RedBlackTree::heightBlack are used by only the drawing code and can be
@@ -56,19 +59,19 @@ template<typename Key, typename Value>  class RedBlackTree {
     */ 
    Key min(Node *p)
    {
-      return (p->left == 0) ? p->key : min(p->left);
+      return (p->left == nullptr) ? p->key : min(p->left);
    }
 
    Key max(Node *p)
    {
-      return (p->right == 0) ? p->key : max(p->right);
+      return (p->right == nullptr) ? p->key : max(p->right);
    }
 
    Node *insert(Node *p, Key key, Value value);
       
   bool isRed(Node *p)
   {
-      return (p == 0) ? false : (p->color == RED);
+      return (p == nullptr) ? false : (p->color == RED);
   }
 
   void colorFlip(Node *p)
@@ -95,12 +98,12 @@ template<typename Key, typename Value>  class RedBlackTree {
 
  public:
 
-   RedBlackTree() { root = 0; }
+   RedBlackTree() { root = nullptr; }
    
   ~RedBlackTree() { DestroyTree(root); }
    
    bool contains(Key key)
-   {  return get(key) != 0;  }
+   {  return get(key) != nullptr;  }
 
    Value get(Key key)
    {  return get(root, key);  }
@@ -115,12 +118,12 @@ template<typename Key, typename Value>  class RedBlackTree {
 
    Key min()
    {  
-      return (root == 0) ? 0 : min(root);
+      return (root == nullptr) ? nullptr : min(root);
    }
 
    Key max()
    {  
-      return (root == 0) ? 0 : max(root);
+      return (root == nullptr) ? nullptr : max(root);
    }
 
    void deleteMin()
@@ -137,11 +140,11 @@ template<typename Key, typename Value>  class RedBlackTree {
     
    void remove(Key key)
    { 
-      if (root == 0) return;
+      if (root == nullptr) return;
 
       root = remove(root, key);
 
-      if (root != 0) { 
+      if (root != nullptr) { 
         root->color = BLACK;
       }
    }
@@ -153,7 +156,7 @@ template<typename Key, typename Value>  class RedBlackTree {
  */
 template<typename Key, typename Value> void RedBlackTree<Key, Value>::DestroyTree(Node *current)
 {
-    if (current == 0) return;
+    if (current == nullptr) return;
     
     DestroyTree(current->left); 
     DestroyTree(current->right);
@@ -249,8 +252,8 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMax(Nod
    if (isRed(p->left))
       p = rotateRight(p);
 
-   if (p->right == 0)
-      return 0;
+   if (p->right == nullptr)
+      return nullptr;
 
    if (!isRed(p->right) && !isRed(p->right->left))
       p = moveRedRight(p);
@@ -263,17 +266,13 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMax(Nod
 template<typename Key, typename Value>  
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::deleteMin(Node *p)
 { 
-   if (p->left == 0)
-      return 0;
+   if (p->left == nullptr)
+      return nullptr;
 
    if (!isRed(p->left) && !isRed(p->left->left))
       p = moveRedLeft(p);
 
-   //--Node *ptemp = p->left; // <-- req'd for C++ 
-
    p->left = deleteMin(p->left);
-
-   //--delete ptemp; // req'd for C++
 
    return fixUp(p);
 }
@@ -297,9 +296,13 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
          p = rotateRight(p);
       }
 
-      if ((key == p->key) && (p->right == 0)) {
-         // should  
-         return 0;
+      if ((key == p->key) && (p->right == nullptr)) {
+
+         /* From code at http://www.teachsolaisgames.com/articles/balanced_left_leaning.html
+          * Taken from the LeftLeaningRedBlack::DeleteRec method
+          */
+         delete p;    
+         return nullptr;
       }  
 
       if (!isRed(p->right) && !isRed(p->right->left)) {
@@ -319,8 +322,6 @@ typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::remove(Node *
          p->key    = successor->key;
 
          p->right = deleteMin(p->right); 
-
-         delete successor;
 
       } else {
 
@@ -344,7 +345,7 @@ template<typename Key, typename Value>  Value RedBlackTree<Key, Value>::get(Node
    else              return get(p->right, key);
 */
    // non-recursive version
-   while (p != 0) {
+   while (p != nullptr) {
        if      (key < p->key) p = p->left;
        else if (key > p->key) p = p->right;
        else             return p->value;
@@ -356,26 +357,19 @@ template<typename Key, typename Value> inline
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::getInOrderSuccessorNode(RedBlackTree<Key, Value>::Node *p)
 {
   p = p->right;
-  /*
-  while (p != 0) {
-
-      p = p->left;
-  }
-  return p;
-  */
-  while (p->left != 0) {
+  
+  while (p->left != nullptr) {
 
       p = p->left;
   }
 
   return p;
-
 }
 
 template<typename Key, typename Value>
 typename RedBlackTree<Key, Value>::Node *RedBlackTree<Key, Value>::insert(RedBlackTree<Key, Value>::Node *p, Key key, Value value)
 { 
-   if (p == 0) 
+   if (p == nullptr) 
       return new Node(key, value);
  
    /* We view the left-leaning red black tree as a 2 3 4 tree. So first check if p is a
@@ -407,7 +401,7 @@ template<typename Key, typename Value> template<typename Functor> inline void Re
 /* in order traversal */
 template<typename Key, typename Value>  template<typename Functor> void RedBlackTree<Key, Value>::traverse(Functor f, RedBlackTree<Key, Value>::Node *root)
 {
-  if (root == 0) { 
+  if (root == nullptr) { 
          return; 
   }
 
